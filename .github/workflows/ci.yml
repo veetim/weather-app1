@@ -34,7 +34,7 @@ jobs:
     # Build the Docker image
     - name: Build Docker image
       run: |
-        docker build -t delveccj/dry-run:latest .
+        docker build -t veetim/dry-run:latest .
 
     # Push the Docker image
     - name: Push Docker image
