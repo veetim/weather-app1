@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Alerts</title>
+    <!-- Bootstrap CSS for quick and responsive design -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin-top: 50px;
+        }
+
+        .alert-card {
+            margin-bottom: 20px;
+        }
+
+        .alert-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .alert-description {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .alert-time {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .no-alerts {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #6c757d;
+        }
+
+        .alert-card a {
+            color: white;
+        }
+
+        .alert-card a:hover {
+            color: #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1 class="text-center mb-4">Current Weather Alerts</h1>
+
+        <!-- Weather Alerts Section -->
+        <div id="alerts-container">
+            <!-- Alerts will be dynamically inserted here -->
+            <div class="no-alerts" id="no-alerts-message">Loading weather alerts...</div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript (Bootstrap JS + Custom JS for Fetching Alerts) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fetch the weather alerts from the Flask backend
+        fetch('/alerts')
+            .then(response => response.json())
+            .then(data => {
+                const alertsContainer = document.getElementById('alerts-container');
+                const noAlertsMessage = document.getElementById('no-alerts-message');
+
+                // Check if there are any alerts
+                if (data.features && data.features.length > 0) {
+                    noAlertsMessage.style.display = 'none'; // Hide "no alerts" message
+
+                    // Loop through alerts and display them
+                    data.features.forEach(alert => {
+                        const alertDiv = document.createElement('div');
+                        alertDiv.classList.add('card', 'alert-card');
+                        alertDiv.innerHTML = `
+                            <div class="card-body">
+                                <h5 class="alert-title">${alert.properties.headline}</h5>
+                                <p class="alert-description">${alert.properties.description}</p>
+                                <p class="alert-time"><strong>Issued:</strong> ${new Date(alert.properties.sent).toLocaleString()}</p>
+                                <a href="${alert.properties.web}" class="btn btn-danger" target="_blank">More Info</a>
+                            </div>
+                        `;
+                        alertsContainer.appendChild(alertDiv);
+                    });
+                } else {
+                    noAlertsMessage.innerHTML = 'No active weather alerts at the moment.';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching alerts:', error);
+                document.getElementById('no-alerts-message').innerHTML = 'Failed to fetch weather alerts.';
+            });
+    </script>
+
+</body>
+
+</html>
+
