@@ -34,9 +34,9 @@ jobs:
     # Build the Docker image
     - name: Build Docker image
       run: |
-        docker build -t veetim/dry-run:latest .
+        docker build -t veetim20/dry-run:latest .
 
     # Push the Docker image
     - name: Push Docker image
       run: |
-        docker push veetim/dry-run:latest
+        docker push veetim20/dry-run:latest
